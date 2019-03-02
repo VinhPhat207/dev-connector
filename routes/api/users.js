@@ -80,6 +80,7 @@ router.post('/login', (req, res) => {
 
             if (user.validPassword(password)) {
                 const payload = { id: user.id, name: user.name, avatar: user.avatar }
+                
                 jwt.sign(
                     payload,
                     secretOrKey,
