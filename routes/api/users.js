@@ -21,7 +21,9 @@ router.get('/test', (req, res) => res.json({ msg: "Users works." }));
 // @access  Public
 router.post('/register', (req, res, next) => {
     const { email, name, password } = req.body;
-    const { errors, isValid } = validateRegisterInput(req.body);
+
+    const keysValidate = ["name", "email", "password", "password2"];
+    const { errors, isValid } = validateRegisterInput(req.body, keysValidate);
 
     if (!isValid) {
         return res.status(400).json(errors);
@@ -61,11 +63,19 @@ router.post('/register', (req, res, next) => {
 router.post('/login', (req, res) => {
     const { email, password } = req.body;
 
+    const keysValidate = ["email", "password"];
+    const { errors, isValid } = validateLoginInput(req.body, keysValidate);
+
+    if (!isValid) {
+        return res.status(400).json(errors);
+    }
+
     User
         .findOne({ email })
         .then(user => {
             if (!user) {
-                return res.status(404).json({ email: 'Email not found.' })
+                errors.email = 'Email not found.';
+                return res.status(404).json(errors)
             }
 
             if (user.validPassword(password)) {
@@ -82,7 +92,8 @@ router.post('/login', (req, res) => {
                         res.json({ success: true, token: `Bearer ${token}` })
                     });
             } else {
-                return res.status(400).json({ password: 'Password incorrect.' })
+                errors.password = 'Password incorrect.';
+                return res.status(400).json(errors);
             }
         })
         .catch(err => {
