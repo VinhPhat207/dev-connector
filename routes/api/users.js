@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const gravatar = require('gravatar');
+const jwt = require('jsonwebtoken');
 
 // Load model
 const User = require('../../models/User');
@@ -24,17 +25,18 @@ router.post('/register', (req, res, next) => {
                 r: 'pg',    // Rating
                 d: 'mm'     // Default
             })
+            
             if (user) {
                 return res.status(400).json({ email: 'Email already exists.' })
-            } else {
-                const newUser = new User({ name, email, avatar });
-                newUser.password = newUser.encryptPassword(password);
-
-                newUser
-                    .save()
-                    .then(user => res.json(user))
-                    .catch(console.log)
             }
+
+            const newUser = new User({ name, email, avatar });
+            newUser.password = newUser.encryptPassword(password);
+
+            newUser
+                .save()
+                .then(user => res.json(user))
+                .catch(console.log)
         })
 });
 
@@ -46,15 +48,26 @@ router.post('/login', (req, res) => {
 
     User
         .findOne({ email })
-        .then(user => {            
+        .then(user => {
             if (!user) {
                 return res.status(404).json({ email: 'Email not found.' })
+            }
+
+            if (user.validPassword(password)) {
+                const payload = { id: user.id, name: user.name, avatar: user.avatar }
+                jwt.sign(
+                    payload,
+                    process.env.secretOrKey,
+                    { expiresIn: 3600 },
+                    (err, token) => {
+                        if (err) {
+                            return res.status(400).json({ msg: 'Failure.' })
+                        }
+
+                        res.json({ success: true, token: `Bearer ${token}` })
+                    });
             } else {
-                if (user.validPassword(password)) {
-                    res.json({msg: 'Success.'});
-                } else {
-                    return res.status(400).json({password: 'Password incorrect.'})
-                }
+                return res.status(400).json({ password: 'Password incorrect.' })
             }
         })
 })
