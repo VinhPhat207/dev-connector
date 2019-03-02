@@ -2,9 +2,14 @@ const express = require('express');
 const router = express.Router();
 const gravatar = require('gravatar');
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
+const mongoose = require('mongoose');
+
+// env 
+const { secretOrKey } = process.env;
 
 // Load model
-const User = require('../../models/User');
+const User = mongoose.model('User');
 
 // @route   GET api/users/test
 // @desc    Test users route
@@ -25,7 +30,7 @@ router.post('/register', (req, res, next) => {
                 r: 'pg',    // Rating
                 d: 'mm'     // Default
             })
-            
+
             if (user) {
                 return res.status(400).json({ email: 'Email already exists.' })
             }
@@ -38,6 +43,10 @@ router.post('/register', (req, res, next) => {
                 .then(user => res.json(user))
                 .catch(console.log)
         })
+        .catch(err => {
+            console.log(err);
+            res.status(400).json({ msg: 'Failure.' })
+        });
 });
 
 // @route   GET api/users/login
@@ -57,7 +66,7 @@ router.post('/login', (req, res) => {
                 const payload = { id: user.id, name: user.name, avatar: user.avatar }
                 jwt.sign(
                     payload,
-                    process.env.secretOrKey,
+                    secretOrKey,
                     { expiresIn: 3600 },
                     (err, token) => {
                         if (err) {
@@ -70,6 +79,21 @@ router.post('/login', (req, res) => {
                 return res.status(400).json({ password: 'Password incorrect.' })
             }
         })
-})
+        .catch(err => {
+            console.log(err);
+            res.status(400).json({ msg: 'Failure.' })
+        });
+});
+
+// @route   GET api/users/current
+// @desc    Returing current user
+// @access  Private
+router.get('/current', passport.authenticate('jwt', { session: false }), (req, res) => {
+    res.json({
+        id: req.user.id,
+        name: req.user.name,
+        email: req.user.email
+    });
+});
 
 module.exports = router;
