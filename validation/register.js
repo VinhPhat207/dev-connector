@@ -1,5 +1,5 @@
 var validator = require('validator');
-const { isEmpty, validateIsEmpty, standardizedInput } = require('../middlewares');
+const { isEmpty, validateIsEmpty, standardizedInput } = require('./middlewares');
 
 module.exports = validateRegisterInput = (data, keys) => {
     var errors = {};
@@ -24,7 +24,7 @@ module.exports = validateRegisterInput = (data, keys) => {
 
     const keysValidateIsEmpty = ["name", "email", "password"]
     errors = { ...errors, ...validateIsEmpty(data, keysValidateIsEmpty)};
-    
+
     return {
         errors,
         isValid: isEmpty(errors)
