@@ -21,6 +21,11 @@ router.get('/test', (req, res) => res.json({ msg: "Users works." }));
 // @access  Public
 router.post('/register', (req, res, next) => {
     const { email, name, password } = req.body;
+    const { errors, isValid } = validateRegisterInput(req.body);
+
+    if (!isValid) {
+        return res.status(400).json(errors);
+    }
 
     User
         .findOne({ email })
@@ -32,7 +37,8 @@ router.post('/register', (req, res, next) => {
             })
 
             if (user) {
-                return res.status(400).json({ email: 'Email already exists.' })
+                errors.email = 'Email already exists.';
+                return res.status(400).json(errors);
             }
 
             const newUser = new User({ name, email, avatar });

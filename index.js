@@ -19,12 +19,15 @@ fs.readdirSync(modelsPath).map(file => {
     require('./models/' + file);
 });
 
-// Require al routers
+// Require all routers
 const users = require('./routes/api/users');
 const profile = require('./routes/api/profile');
 const posts = require('./routes/api/posts');
 
 const app = express();
+
+// Load Validation
+require('./validation');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -34,6 +37,7 @@ app.use(passport.initialize());
 
 // Passport Config
 require('./configs/passport')(passport);
+
 
 // Use Routes
 app.use('/api/users', users);
