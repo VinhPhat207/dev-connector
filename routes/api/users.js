@@ -20,14 +20,14 @@ router.get('/test', (req, res) => res.json({ msg: "Users works." }));
 // @desc    Register user
 // @access  Public
 router.post('/register', (req, res, next) => {
-    const { email, name, password } = req.body;
-
     const keysValidate = ["name", "email", "password", "password2"];
     const { errors, isValid } = validateRegisterInput(req.body, keysValidate);
 
     if (!isValid) {
         return res.status(400).json(errors);
     }
+
+    const { email, name, password } = req.body;
 
     User
         .findOne({ email })
