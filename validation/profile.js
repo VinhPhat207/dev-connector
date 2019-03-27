@@ -1,5 +1,5 @@
 var validator = require('validator');
-const { isEmpty, validateIsEmpty, validateIsURL, standardizedInput } = require('./middlewares');
+const { isEmpty, validateIsEmpty, validateIsURL, standardizedInput } = require('../utils');
 
 module.exports = validateProfileInput = (data, keys) => {
     var errors = {};

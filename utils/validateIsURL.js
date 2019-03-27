@@ -1,7 +1,7 @@
 var validator = require('validator');
 const isEmpty = require('./isEmpty');
 
-const validateIsUrl = url = (data, keys) => {
+module.exports = validateIsUrl = (data, keys) => {
     var errors = {};
 
     for (const key of keys) {        
@@ -13,6 +13,4 @@ const validateIsUrl = url = (data, keys) => {
     }
 
     return errors;
-}
-
-module.exports = validateIsUrl;
+};

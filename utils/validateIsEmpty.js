@@ -1,6 +1,6 @@
 var validator = require('validator');
 
-const validateIsEmpty = (data, keys) => {
+module.exports = validateIsEmpty = (data, keys) => {
     var errors = {};
 
     for (const key of keys) {        
@@ -10,6 +10,4 @@ const validateIsEmpty = (data, keys) => {
     }
 
     return errors;
-}
-
-module.exports = validateIsEmpty;
+};

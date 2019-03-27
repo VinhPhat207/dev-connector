@@ -1,6 +1,6 @@
 const isEmpty = require('./isEmpty');
 
-const standardizedInput = (data, keys) => {
+module.exports = standardizedInput = (data, keys) => {
     for (const key of keys) {
         if (isEmpty(data[key])) {
             data[key] = '';
@@ -8,6 +8,4 @@ const standardizedInput = (data, keys) => {
     }
 
     return data;
-}
-
-module.exports = standardizedInput;
+};

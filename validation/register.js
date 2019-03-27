@@ -1,5 +1,5 @@
 var validator = require('validator');
-const { isEmpty, validateIsEmpty, standardizedInput } = require('./middlewares');
+const { isEmpty, validateIsEmpty, standardizedInput } = require('../utils');
 
 module.exports = validateRegisterInput = (data, keys) => {
     var errors = {};

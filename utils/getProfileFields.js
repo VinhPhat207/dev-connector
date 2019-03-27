@@ -1,12 +1,6 @@
-const isEmpty = value =>
-    (
-        value === undefined ||
-        value === null ||
-        (typeof value === 'object' && Object.keys(value).length === 0) ||
-        (typeof value === 'string' && value.trim().length === 0)
-    )
+const isEmpty = require('./isEmpty');
 
-const getProfileFields = req => {
+module.exports = getProfileFields = req => {
     let profileFields = {};
     profileFields.user = req.user.id;
     
@@ -25,9 +19,6 @@ const getProfileFields = req => {
     }
 
     profileFields = {...profileFields, ...payload};
+    
     return profileFields;
-}
-
-module.exports = {
-    getProfileFields
-}
+};

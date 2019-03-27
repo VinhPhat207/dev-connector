@@ -1,12 +1,13 @@
-const gravatar = require('gravatar');
+const gravatar = require("gravatar");
 const express = require("express");
 const register = express.Router();
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const User = mongoose.model('User');
+const User = mongoose.model("User");
+const Profile = mongoose.model("Profile");
 
 //@input: name, email, password, password2
-register.post('/', (req, res) => {
+register.post("/", (req, res) => {
   const keysValidate = ["name", "email", "password", "password2"];
   const { errors, isValid } = validateRegisterInput(req.body, keysValidate);
 
@@ -35,7 +36,7 @@ register.post('/', (req, res) => {
       newUser
         .save()
         .then(user => res.json(user))
-        .catch(console.log);
+        .catch(err => res.status(400).json(err));
     })
     .catch(err => {
       console.log(err);
